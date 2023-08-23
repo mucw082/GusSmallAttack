@@ -1443,40 +1443,18 @@ class ToolsConsole:
     @staticmethod
     def usage():
         print((
-                  '* GusSmall - DDoS Attack Script With %d Methods\n'
-                  'Note: If the Proxy list is empty, the attack will run without proxies\n'
-                  '      If the Proxy file doesn\'t exist, the script will download proxies and check them.\n'
-                  '      Proxy Type 0 = All in config.json\n'
-                  '      SocksTypes:\n'
-                  '         - 6 = RANDOM\n'
-                  '         - 5 = SOCKS5\n'
-                  '         - 4 = SOCKS4\n'
-                  '         - 1 = HTTP\n'
-                  '         - 0 = ALL\n'
-                  ' > Methods:\n'
-                  ' - Layer4\n'
-                  ' | %s | %d Methods\n'
-                  ' - Layer7\n'
-                  ' | %s | %d Methods\n'
-                  ' - Tools\n'
-                  ' | %s | %d Methods\n'
-                  ' - Others\n'
-                  ' | %s | %d Methods\n'
-                  ' - All %d Methods\n'
-                  '\n'
-                  'Example:\n'
-                  '   L7: python3 %s <method> <url> <socks_type> <threads> <proxylist> <rpc> <duration> <debug=optional>\n'
-                  '   L4: python3 %s <method> <ip:port> <threads> <duration>\n'
-                  '   L4 Proxied: python3 %s <method> <ip:port> <threads> <duration> <socks_type> <proxylist>\n'
-                  '   L4 Amplification: python3 %s <method> <ip:port> <threads> <duration> <reflector file (only use with'
-                  ' Amplification)>\n') %
-              (len(Methods.ALL_METHODS) + 3 + len(ToolsConsole.METHODS),
-               ", ".join(Methods.LAYER4_METHODS), len(Methods.LAYER4_METHODS),
-               ", ".join(Methods.LAYER7_METHODS), len(Methods.LAYER7_METHODS),
-               ", ".join(ToolsConsole.METHODS), len(ToolsConsole.METHODS),
-               ", ".join(["TOOLS", "HELP", "STOP"]), 3,
-               len(Methods.ALL_METHODS) + 3 + len(ToolsConsole.METHODS),
-               argv[0], argv[0], argv[0], argv[0]))
+                '..######...##.....##..######...######..##.....##....###....##.......##......\n'
+                '.##....##..##.....##.##....##.##....##.###...###...##.##...##.......##......\n'
+                '.##........##.....##.##.......##.......####.####..##...##..##.......##......\n'
+                '.##...####.##.....##..######...######..##.###.##.##.....##.##.......##......\n'
+                '.##....##..##.....##.......##.......##.##.....##.#########.##.......##......\n'
+                '.##....##..##.....##.##....##.##....##.##.....##.##.....##.##.......##......\n'
+                '..######....#######...######...######..##.....##.##.....##.########.########\n'
+                
+'Welcome: API GusSmall - DDoS Attack Script With Methods\n'
+'Warning: If the Proxy list is empty, the attack will run without proxies\n'
+'If the Proxy file doesnt exist, the script will download proxies and check them.\n'
+'Proxy Type 0 = All in config.json\n'))
 
     # noinspection PyBroadException
     @staticmethod
@@ -1599,7 +1577,7 @@ if __name__ == '__main__':
                             or bombardier_path.with_suffix('.exe').exists()
                     ), (
                         "Install bombardier: "
-                        "https://github.com/MHProDev/MHDDoS/wiki/BOMB-method"
+                        "https://github.com/mucw082"
                     )
 
                 if len(argv) == 9:
@@ -1649,7 +1627,7 @@ if __name__ == '__main__':
 
                 if method in Methods.LAYER4_AMP:
                     logger.warning("this method need spoofable servers please check")
-                    logger.warning("https://github.com/MHProDev/MHDDoS/wiki/Amplification-ddos-attack")
+                    logger.warning("https://github.com/mucw082")
 
                 threads = int(argv[3])
                 timer = int(argv[4])
